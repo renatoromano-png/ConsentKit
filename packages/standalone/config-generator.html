@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ConsentKit — Generatore configurazione (standalone)</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; color: #1f2937; }
+  h1 { font-size: 22px; } h2 { font-size: 16px; margin-top: 28px; }
+  label { display: block; margin: 10px 0 4px; font-weight: 600; font-size: 14px; }
+  input[type=text], input[type=url], select { width: 100%; padding: 8px; box-sizing: border-box; }
+  .row { display: flex; gap: 16px; } .row > div { flex: 1; }
+  .check { font-weight: 400; display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  pre { background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow: auto; font-size: 13px; }
+  button { background: #2563eb; color: #fff; border: 0; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .desc { font-size: 13px; color: #6b7280; font-weight: 400; }
+</style>
+</head>
+<body>
+<h1>ConsentKit — Generatore configurazione (siti non-WordPress)</h1>
+<p class="desc">Compila i campi e copia lo snippet generato nel tuo sito. Vedi il README per dove posizionarlo.</p>
+
+<h2>Generale</h2>
+<label>Titolo <input type="text" id="title" value="Utilizziamo i cookie"></label>
+<label>Testo <input type="text" id="body" value="Usiamo cookie tecnici e, previo consenso, cookie di analytics e marketing."></label>
+<div class="row">
+  <div><label>URL privacy policy <input type="url" id="privacy" placeholder="/privacy"></label></div>
+  <div><label>URL cookie policy <input type="url" id="cookie" placeholder="/cookie-policy"></label></div>
+</div>
+<div class="row">
+  <div><label>Versione policy <input type="text" id="policyVersion" value="2026-06"></label></div>
+  <div><label>Posizione
+    <select id="position"><option value="bottom-bar">Barra in basso</option><option value="modal">Riquadro</option></select>
+  </label></div>
+</div>
+
+<h2>Integrazioni</h2>
+<label class="check"><input type="checkbox" id="cm" checked> Google Consent Mode v2</label>
+<label class="check"><input type="checkbox" id="gtm" checked> Google Tag Manager (dataLayer)</label>
+<label class="check"><input type="checkbox" id="li"> LinkedIn Insight Tag</label>
+<label>LinkedIn Partner ID <input type="text" id="liId" placeholder="123456"></label>
+
+<p><button onclick="gen()">Genera snippet</button></p>
+
+<h2>1. Consent Mode default — incolla in cima al &lt;head&gt;, PRIMA di GTM</h2>
+<pre id="outHead"></pre>
+
+<h2>2. Config + core — incolla prima di &lt;/body&gt;</h2>
+<pre id="outBody"></pre>
+
+<script>
+function val(id){ return document.getElementById(id).value.trim(); }
+function chk(id){ return document.getElementById(id).checked; }
+
+function gen() {
+  var head =
+'<!-- ConsentKit: Consent Mode v2 default (PRIMA di GTM) -->\n' +
+'<script>\n' +
+'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}\n' +
+"gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',personalization_storage:'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});\n" +
+'<\/script>';
+
+  var cfg = {
+    version: "1.0",
+    policyVersion: val('policyVersion') || "1",
+    consentDuration: 365,
+    repromptAfterDays: 180,
+    forceRenewDate: null,
+    position: val('position'),
+    privacyPolicyUrl: val('privacy'),
+    cookiePolicyUrl: val('cookie'),
+    integrations: {
+      googleConsentMode: chk('cm'),
+      gtm: chk('gtm'),
+      linkedin: chk('li'),
+      linkedinPartnerId: val('liId')
+    },
+    banner: {
+      title: val('title'),
+      body: val('body'),
+      acceptLabel: "Accetta tutto",
+      rejectLabel: "Rifiuta",
+      customizeLabel: "Gestisci preferenze",
+      saveLabel: "Salva preferenze",
+      closeLabel: "Chiudi",
+      reviewLabel: "Rivedi le tue scelte sui cookie",
+      prefsTitle: "Preferenze cookie",
+      privacyLabel: "Privacy policy",
+      cookieLabel: "Cookie policy",
+      necessaryLabel: "Necessari (sempre attivi)",
+      categoryLabels: { analytics: "Analytics", marketing: "Marketing", preferences: "Preferenze" }
+    }
+  };
+
+  var body =
+'<link rel="stylesheet" href="/path/to/consentkit/banner.css">\n' +
+'<script>window.ckConfig = ' + JSON.stringify(cfg, null, 2) + ';<\/script>\n' +
+'<script src="/path/to/consentkit/consentkit.js" defer><\/script>';
+
+  document.getElementById('outHead').textContent = head;
+  document.getElementById('outBody').textContent = body;
+}
+gen();
+</script>
+</body>
+</html>

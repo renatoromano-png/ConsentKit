@@ -1,0 +1,18 @@
+# --- Materiale di studio locale (NON pubblicare) ---
+complianz-gdpr/
+complianz-gdpr.*.zip
+*.pdf
+
+# --- Documento di progetto interno (siti pilota, analisi, rollout) ---
+consentkit-project.md
+
+# --- Artefatti di build ---
+dist/
+
+# --- Sistema / editor ---
+.DS_Store
+Thumbs.db
+node_modules/
+
+# --- Claude / sessione ---
+.claude/

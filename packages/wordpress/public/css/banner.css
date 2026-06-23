@@ -1,0 +1,111 @@
+/**
+ * ConsentKit — Banner & preferenze (core)
+ * Variabili tema personalizzabili via --ck-*. Mobile-first, responsive.
+ * Parità Accetta/Rifiuta imposta dallo stile (§13.4): stessa classe .ck-btn-primary.
+ */
+:root {
+  --ck-primary: #2563eb;
+  --ck-primary-contrast: #ffffff;
+  --ck-bg: #ffffff;
+  --ck-text: #1f2937;
+  --ck-muted: #6b7280;
+  --ck-border: #e5e7eb;
+  --ck-radius: 10px;
+  --ck-shadow: 0 -2px 24px rgba(0, 0, 0, .12);
+  --ck-z: 2147483000;
+}
+
+.ck-banner, .ck-overlay, .ck-review { box-sizing: border-box; }
+.ck-banner *, .ck-overlay * { box-sizing: border-box; }
+
+/* --- Banner --------------------------------------------------------------- */
+.ck-banner {
+  position: fixed;
+  z-index: var(--ck-z);
+  background: var(--ck-bg);
+  color: var(--ck-text);
+  border: 1px solid var(--ck-border);
+  box-shadow: var(--ck-shadow);
+  padding: 20px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ck-bottom-bar { left: 0; right: 0; bottom: 0; border-left: 0; border-right: 0; border-bottom: 0; }
+.ck-modal {
+  left: 50%; bottom: 24px; transform: translateX(-50%);
+  width: min(560px, calc(100% - 32px));
+  border-radius: var(--ck-radius);
+}
+.ck-banner .ck-title { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
+.ck-banner .ck-text { margin: 0 0 10px; color: var(--ck-text); }
+
+.ck-links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; }
+.ck-link { color: var(--ck-primary); text-decoration: underline; font-size: 13px; }
+
+.ck-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end; }
+
+/* Pulsanti — Accetta e Rifiuta condividono .ck-btn-primary => parità grafica */
+.ck-btn {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 10px 18px;
+  border: 1px solid transparent; font-weight: 600; line-height: 1.2;
+}
+.ck-btn-primary {
+  background: var(--ck-primary); color: var(--ck-primary-contrast);
+  border-color: var(--ck-primary);
+}
+.ck-btn-primary:hover { filter: brightness(.95); }
+.ck-btn-link {
+  background: transparent; color: var(--ck-muted); border: 0;
+  text-decoration: underline; padding: 10px 8px; font-weight: 500;
+}
+.ck-btn-link:hover { color: var(--ck-text); }
+
+/* X di chiusura — evidenza grafica pari ai pulsanti (§13.1) */
+.ck-close {
+  position: absolute; top: 10px; right: 12px;
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--ck-border); background: var(--ck-bg);
+  color: var(--ck-text); font-size: 22px; line-height: 1; cursor: pointer;
+}
+.ck-close:hover { background: var(--ck-border); }
+
+/* --- Overlay + pannello preferenze ---------------------------------------- */
+.ck-overlay {
+  position: fixed; inset: 0; z-index: calc(var(--ck-z) + 1);
+  background: rgba(0, 0, 0, .5);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; font-family: inherit;
+}
+.ck-prefs-panel {
+  position: relative; background: var(--ck-bg); color: var(--ck-text);
+  width: min(640px, 100%); max-height: 90vh; overflow: auto;
+  border-radius: var(--ck-radius); padding: 24px; font-size: 14px;
+}
+.ck-prefs-panel .ck-title { margin: 0 0 16px; font-size: 18px; font-weight: 700; }
+.ck-prefs-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.ck-prefs-row { border: 1px solid var(--ck-border); border-radius: 8px; padding: 12px 14px; }
+.ck-row-head { display: flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer; }
+.ck-row-head input { width: 18px; height: 18px; accent-color: var(--ck-primary); }
+.ck-row-desc { margin: 8px 0 0 28px; color: var(--ck-muted); font-size: 13px; }
+
+/* --- Pulsante "Rivedi le tue scelte" -------------------------------------- */
+.ck-review {
+  position: fixed; left: 16px; bottom: 16px; z-index: calc(var(--ck-z) - 1);
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--ck-border); background: var(--ck-bg);
+  font-size: 22px; line-height: 1; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,.15);
+}
+.ck-review:hover { transform: scale(1.05); }
+
+/* --- Responsive ----------------------------------------------------------- */
+@media (max-width: 600px) {
+  .ck-actions { justify-content: stretch; }
+  .ck-actions .ck-btn-primary { flex: 1 1 auto; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ck-bg: #1f2937; --ck-text: #f3f4f6; --ck-muted: #9ca3af; --ck-border: #374151;
+  }
+}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ConsentKit — Test prior blocking & consenso</title>
+
+<!-- 1) Consent Mode v2 DEFAULT (prima di tutto, come in produzione) -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',personalization_storage:'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});
+</script>
+
+<!-- 2) Stili del banner -->
+<link rel="stylesheet" href="./banner.css">
+
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 30px auto; padding: 0 16px; color: #1f2937; }
+  h1 { font-size: 22px; } h2 { font-size: 15px; margin: 22px 0 8px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; font-size: 13px; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+  .ok { background: #dcfce7; color: #166534; } .ko { background: #fee2e2; color: #991b1b; }
+  pre { background: #0f172a; color: #e2e8f0; padding: 12px; border-radius: 8px; overflow: auto; font-size: 12px; max-height: 220px; }
+  .toolbar button { background: #2563eb; color:#fff; border:0; padding:8px 14px; border-radius:8px; cursor:pointer; margin-right:8px; }
+  .toolbar button.secondary { background:#6b7280; }
+  code { background:#f3f4f6; padding:1px 5px; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<h1>🧪 ConsentKit — Test prior blocking &amp; consenso</h1>
+<p>Pagina autonoma per verificare il <strong>core</strong> a rischio zero. Apri la console (F12) per i log. Usa una finestra anonima per partire pulito, oppure il pulsante <em>Reset</em>.</p>
+
+<div class="toolbar">
+  <button onclick="ConsentKit.open()">Apri preferenze</button>
+  <button class="secondary" onclick="ConsentKit.reset()">Reset (cancella consenso)</button>
+</div>
+
+<h2>Esiti attesi</h2>
+<div class="card">
+  <ul>
+    <li>All'avvio (senza scelta): i 3 tag sotto restano <strong>spenti</strong>, Consent Mode tutto <code>denied</code>.</li>
+    <li>Dopo <strong>Accetta tutto</strong>: tutti e 3 si accendono, Consent Mode → <code>granted</code>, evento <code>ck_consent_update</code> nel dataLayer.</li>
+    <li>Dopo <strong>Rifiuta</strong> o la <strong>X</strong>: nessun tag parte.</li>
+    <li>Da <strong>Gestisci preferenze</strong>: accendi solo le categorie scelte.</li>
+    <li>Ricaricando: il banner <strong>non</strong> riappare finché il consenso è valido.</li>
+  </ul>
+</div>
+
+<h2>Stato tag di test (prior blocking)</h2>
+<div class="grid">
+  <div class="card">Analytics: <span id="s-analytics" class="pill ko">spento</span></div>
+  <div class="card">Marketing: <span id="s-marketing" class="pill ko">spento</span></div>
+  <div class="card">Preferenze: <span id="s-preferences" class="pill ko">spento</span></div>
+  <div class="card">Cookie scritti dai tag: <span id="s-cookies">—</span></div>
+</div>
+
+<h2>Consenso corrente (<code>ConsentKit.getConsent()</code>)</h2>
+<pre id="out-consent">—</pre>
+
+<h2>localStorage <code>ck_consent</code></h2>
+<pre id="out-storage">—</pre>
+
+<h2>dataLayer (Consent Mode + eventi)</h2>
+<pre id="out-datalayer">—</pre>
+
+<!-- ============ TAG DI TEST BLOCCATI (prior blocking) ============ -->
+<!-- ConsentKit li attiva SOLO dopo l'opt-in della relativa categoria.
+     In produzione qui ci sarebbero GA4, Google Ads, pixel, ecc. -->
+
+<script type="text/plain" data-ck-category="analytics">
+  window.__ckTest = window.__ckTest || {};
+  window.__ckTest.analytics = true;
+  document.cookie = "ck_test_analytics=1; path=/; max-age=3600";
+  console.log('%c[TEST] tag ANALYTICS attivato', 'color:#16a34a');
+</script>
+
+<script type="text/plain" data-ck-category="marketing">
+  window.__ckTest = window.__ckTest || {};
+  window.__ckTest.marketing = true;
+  document.cookie = "ck_test_marketing=1; path=/; max-age=3600";
+  console.log('%c[TEST] tag MARKETING attivato', 'color:#16a34a');
+</script>
+
+<script type="text/plain" data-ck-category="preferences">
+  window.__ckTest = window.__ckTest || {};
+  window.__ckTest.preferences = true;
+  document.cookie = "ck_test_preferences=1; path=/; max-age=3600";
+  console.log('%c[TEST] tag PREFERENZE attivato', 'color:#16a34a');
+</script>
+
+<!-- ============ CONFIG + CORE ============ -->
+<script>
+window.ckConfig = {
+  version: "1.0",
+  policyVersion: "test-1",
+  consentDuration: 365,
+  repromptAfterDays: 180,
+  forceRenewDate: null,
+  position: "bottom-bar",
+  privacyPolicyUrl: "#privacy",
+  cookiePolicyUrl: "#cookie",
+  integrations: {
+    googleConsentMode: true,
+    gtm: true,
+    linkedin: false,
+    linkedinPartnerId: ""
+  },
+  banner: {
+    title: "Utilizziamo i cookie",
+    body: "Usiamo cookie tecnici e, previo consenso, cookie di analytics e marketing.",
+    acceptLabel: "Accetta tutto",
+    rejectLabel: "Rifiuta",
+    customizeLabel: "Gestisci preferenze",
+    saveLabel: "Salva preferenze",
+    closeLabel: "Chiudi",
+    reviewLabel: "Rivedi le tue scelte sui cookie",
+    prefsTitle: "Preferenze cookie",
+    privacyLabel: "Privacy policy",
+    cookieLabel: "Cookie policy",
+    necessaryLabel: "Necessari (sempre attivi)",
+    categoryLabels: { analytics: "Analytics", marketing: "Marketing", preferences: "Preferenze" },
+    categoryDescriptions: {
+      analytics: "Statistiche di utilizzo del sito.",
+      marketing: "Tracciamento per campagne pubblicitarie.",
+      preferences: "Memorizzano le tue preferenze."
+    }
+  }
+};
+</script>
+<script src="./consentkit.js"></script>
+
+<!-- ============ CRUSCOTTO LIVE ============ -->
+<script>
+(function () {
+  function pill(id, on) {
+    var e = document.getElementById(id);
+    e.textContent = on ? 'ACCESO' : 'spento';
+    e.className = 'pill ' + (on ? 'ok' : 'ko');
+  }
+  function testCookies() {
+    return (document.cookie.match(/ck_test_\w+/g) || []).join(', ') || '—';
+  }
+  function refresh() {
+    var t = window.__ckTest || {};
+    pill('s-analytics', !!t.analytics);
+    pill('s-marketing', !!t.marketing);
+    pill('s-preferences', !!t.preferences);
+    document.getElementById('s-cookies').textContent = testCookies();
+    document.getElementById('out-consent').textContent =
+      window.ConsentKit ? JSON.stringify(ConsentKit.getConsent(), null, 2) : '—';
+    document.getElementById('out-storage').textContent =
+      localStorage.getItem('ck_consent') || '(nessuno)';
+    var dl = (window.dataLayer || []).map(function (x) {
+      return Array.isArray(x) || (x && x.length !== undefined && typeof x !== 'string')
+        ? Array.prototype.slice.call(x) : x;
+    });
+    document.getElementById('out-datalayer').textContent = JSON.stringify(dl, null, 2);
+  }
+  setInterval(refresh, 500);
+  refresh();
+})();
+</script>
+</body>
+</html>
