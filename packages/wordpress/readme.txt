@@ -1,5 +1,5 @@
 === ConsentKit ===
-Contributors: foodandtech
+Contributors: renatosaka
 Tags: cookie, consent, gdpr, cookie banner, consent mode
 Requires at least: 5.9
 Tested up to: 6.8
