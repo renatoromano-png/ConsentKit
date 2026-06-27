@@ -26,6 +26,13 @@ Funzionalità:
 
 Il cuore è un core JavaScript senza dipendenze, riusabile anche su siti non-WordPress.
 
+In v1.0 i cookie si gestiscono tramite un registry pre-popolato con i servizi più comuni, modificabile a mano dall'amministratore.
+
+Roadmap (in lavorazione):
+
+* Scansione automatica dei cookie effettivamente caricati nelle pagine del sito, per rilevare cosa è presente senza inserimento manuale.
+* Riconoscimento e classificazione automatica dei cookie rilevati tramite un database pubblico (servizio, finalità, durata, categoria).
+
 == Installation ==
 
 1. Carica la cartella `consentkit` in `/wp-content/plugins/`.
