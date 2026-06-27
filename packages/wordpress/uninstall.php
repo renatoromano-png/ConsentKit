@@ -12,5 +12,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 delete_option( 'consentkit_settings' );
 
 global $wpdb;
-$table = $wpdb->prefix . 'consentkit_log';
-$wpdb->query( "DROP TABLE IF EXISTS {$table}" ); // phpcs:ignore WordPress.DB
+// Il nome tabella deriva solo da $wpdb->prefix + suffisso fisso (nessun input utente);
+// gli identificatori SQL non possono essere passati come parametri preparati.
+$consentkit_table = $wpdb->prefix . 'consentkit_log';
+$wpdb->query( "DROP TABLE IF EXISTS `{$consentkit_table}`" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter

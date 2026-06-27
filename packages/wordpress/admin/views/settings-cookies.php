@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$opt     = CONSENTKIT_OPTION;
-$cookies = isset( $settings['cookies'] ) && is_array( $settings['cookies'] ) ? $settings['cookies'] : array();
-$cats    = array(
+$consentkit_opt     = CONSENTKIT_OPTION;
+$consentkit_cookies = isset( $settings['cookies'] ) && is_array( $settings['cookies'] ) ? $settings['cookies'] : array();
+$consentkit_cats    = array(
 	'necessary'   => __( 'Necessari', 'consentkit' ),
 	'analytics'   => __( 'Analytics', 'consentkit' ),
 	'marketing'   => __( 'Marketing', 'consentkit' ),
@@ -63,13 +63,13 @@ function consentkit_cookie_row( $i, $row, $opt, $cats ) {
 	</thead>
 	<tbody id="ck-cookie-rows">
 		<?php
-		$i = 0;
-		foreach ( $cookies as $row ) {
-			consentkit_cookie_row( $i, $row, $opt, $cats );
-			$i++;
+		$consentkit_i = 0;
+		foreach ( $consentkit_cookies as $consentkit_row ) {
+			consentkit_cookie_row( $consentkit_i, $consentkit_row, $consentkit_opt, $consentkit_cats );
+			$consentkit_i++;
 		}
 		// Riga template vuota (indice alto, ignorata se lasciata vuota dal sanitize).
-		consentkit_cookie_row( 9000, array( 'category' => 'necessary' ), $opt, $cats );
+		consentkit_cookie_row( 9000, array( 'category' => 'necessary' ), $consentkit_opt, $consentkit_cats );
 		?>
 	</tbody>
 </table>

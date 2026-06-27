@@ -89,8 +89,8 @@ class ConsentKit_Api {
 
 		// Pseudo-ID: hash non reversibile di IP + user agent + salt giornaliero.
 		// Permette de-duplica relativa senza memorizzare dati identificativi.
-		$ip    = isset( $_SERVER['REMOTE_ADDR'] ) ? wp_unslash( $_SERVER['REMOTE_ADDR'] ) : '';
-		$ua    = isset( $_SERVER['HTTP_USER_AGENT'] ) ? wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) : '';
+		$ip    = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$ua    = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
 		$salt  = wp_salt( 'auth' ) . gmdate( 'Y-m-d' );
 		$pseudo = hash( 'sha256', $ip . '|' . $ua . '|' . $salt );
 

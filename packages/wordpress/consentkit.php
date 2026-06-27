@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       ConsentKit
  * Plugin URI:        https://github.com/renatoromano-png/ConsentKit
- * Description:       Consenso cookie GDPR/ePrivacy conforme alle Linee guida del Garante: Google Consent Mode v2, GTM e LinkedIn. Nessun limite su pagine o CPT.
+ * Description:       GDPR/ePrivacy cookie consent compliant with the Italian DPA (Garante) guidelines: Google Consent Mode v2, GTM and LinkedIn. No page or CPT limits.
  * Version:           1.0.0
  * Requires at least: 5.9
  * Requires PHP:      7.4

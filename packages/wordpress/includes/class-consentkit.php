@@ -31,18 +31,12 @@ final class ConsentKit {
 	}
 
 	private function __construct() {
-		add_action( 'init', array( $this, 'load_textdomain' ) );
-
 		$this->frontend = new ConsentKit_Frontend();
 		$this->api      = new ConsentKit_Api();
 
 		if ( is_admin() ) {
 			$this->admin = new ConsentKit_Admin();
 		}
-	}
-
-	public function load_textdomain() {
-		load_plugin_textdomain( 'consentkit', false, dirname( plugin_basename( CONSENTKIT_FILE ) ) . '/languages' );
 	}
 
 	/**

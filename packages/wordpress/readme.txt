@@ -8,62 +8,62 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Consenso cookie GDPR/ePrivacy conforme alle Linee guida del Garante: Google Consent Mode v2, GTM e LinkedIn. Nessun limite su pagine o CPT.
+GDPR/ePrivacy cookie consent compliant with the Italian DPA (Garante) guidelines: Google Consent Mode v2, GTM and LinkedIn. No page or CPT limits.
 
 == Description ==
 
-ConsentKit è un cookie consent manager open source, senza limiti artificiali (niente cap su pageview, pagine o Custom Post Type).
+ConsentKit is an open-source cookie consent manager with no artificial limits (no caps on pageviews, pages or Custom Post Types).
 
-Funzionalità:
+Features:
 
-* Banner conforme al Garante: X di chiusura, parità Accetta/Rifiuta, link informativa, preferenze granulari.
-* Prior blocking degli script (`type="text/plain"` + `data-ck-category`) finché manca il consenso.
-* Google Consent Mode v2 (default denied prima di GTM, update al consenso).
+* Compliant consent banner: close (X) button, equal Accept/Reject buttons, link to the privacy notice, granular preferences.
+* Prior blocking of scripts (`type="text/plain"` + `data-ck-category`) until consent is given.
+* Google Consent Mode v2 (default denied before GTM, update on consent).
 * Google Tag Manager via dataLayer.
-* LinkedIn Insight Tag caricato solo con consenso marketing.
-* Riproposizione del banner conforme (minimo 6 mesi) e re-consent al cambio della cookie policy.
-* Log opzionale dei consensi pseudonimizzato per audit GDPR.
+* LinkedIn Insight Tag loaded only with marketing consent.
+* Compliant banner re-prompt (minimum 6 months) and re-consent when the cookie policy changes.
+* Optional pseudonymized consent log for GDPR audits.
 
-Il cuore è un core JavaScript senza dipendenze, riusabile anche su siti non-WordPress.
+The core is a dependency-free JavaScript engine, reusable on non-WordPress sites too.
 
-In v1.0 i cookie si gestiscono tramite un registry pre-popolato con i servizi più comuni, modificabile a mano dall'amministratore.
+In v1.0 cookies are managed through a pre-filled registry of the most common services, editable by hand from the admin.
 
-Roadmap (in lavorazione):
+Roadmap (in progress):
 
-* Scansione automatica dei cookie effettivamente caricati nelle pagine del sito, per rilevare cosa è presente senza inserimento manuale.
-* Riconoscimento e classificazione automatica dei cookie rilevati tramite un database pubblico (servizio, finalità, durata, categoria).
+* Automatic scanning of the cookies actually loaded on the site pages, to detect what is present without manual entry.
+* Automatic recognition and classification of the detected cookies through a public database (service, purpose, duration, category).
 
 == Installation ==
 
-1. Carica la cartella `consentkit` in `/wp-content/plugins/`.
-2. Attiva il plugin dal menu Plugin.
-3. Vai in Impostazioni → ConsentKit e configura testi, cookie e integrazioni.
+1. Upload the `consentkit` folder to `/wp-content/plugins/`.
+2. Activate the plugin from the Plugins menu.
+3. Go to Settings &rarr; ConsentKit and configure texts, cookies and integrations.
 
 == Frequently Asked Questions ==
 
-= Funziona con i Custom Post Type? =
-Sì, senza configurazione aggiuntiva e senza limiti.
+= Does it work with Custom Post Types? =
+Yes, with no extra configuration and no limits.
 
-= È conforme al Garante Privacy italiano? =
-Il plugin implementa i requisiti tecnici delle Linee guida del 10 giugno 2021. La conformità complessiva dipende anche dalla corretta informativa e classificazione dei cookie del singolo sito.
+= Is it compliant with the Italian Data Protection Authority (Garante)? =
+The plugin implements the technical requirements of the 10 June 2021 guidelines. Overall compliance also depends on a correct privacy notice and on the proper classification of each site's cookies.
 
-= Invia dati a servizi esterni? =
-No. ConsentKit non comunica con alcun server di terze parti. Carica gli script di Google (Consent Mode/GTM) e LinkedIn solo dopo il consenso e solo se li configuri. Il log dei consensi, se attivato, resta nel database del tuo sito ed è pseudonimizzato.
+= Does it send data to external services? =
+No. ConsentKit does not communicate with any third-party server. It loads the Google (Consent Mode/GTM) and LinkedIn scripts only after consent and only if you configure them. The optional consent log stays in your site's database and is pseudonymized.
 
 == Screenshots ==
 
-1. Banner di consenso conforme al Garante (barra inferiore).
-2. Pannello preferenze granulari per categoria.
-3. Impostazioni → Generale: testi, colore, riproposizione.
-4. Impostazioni → Cookie: registry dei cookie.
-5. Impostazioni → Integrazioni: Consent Mode v2, GTM, LinkedIn.
+1. Compliant consent banner (bottom bar).
+2. Granular per-category preferences panel.
+3. Settings &rarr; General: texts, color, re-prompt.
+4. Settings &rarr; Cookies: cookie registry.
+5. Settings &rarr; Integrations: Consent Mode v2, GTM, LinkedIn.
 
 == Upgrade Notice ==
 
 = 1.0.0 =
-Prima release pubblica.
+First public release.
 
 == Changelog ==
 
 = 1.0.0 =
-* Prima release: banner, preferenze granulari, Consent Mode v2, GTM, LinkedIn, prior blocking, log opzionale.
+* First release: banner, granular preferences, Consent Mode v2, GTM, LinkedIn, prior blocking, optional log.
