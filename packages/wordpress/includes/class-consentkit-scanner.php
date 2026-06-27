@@ -109,6 +109,120 @@ class ConsentKit_Scanner {
 				'permission_callback' => $can_manage,
 			)
 		);
+
+		register_rest_route(
+			'consentkit/v1',
+			'/scan/server',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'scan_server' ),
+				'permission_callback' => $can_manage,
+			)
+		);
+	}
+
+	/**
+	 * Scan veloce lato server: per ogni URL (stesso sito, max 10) scarica l'HTML
+	 * con wp_remote_get e ne estrae i domini di terze parti. Niente rendering,
+	 * quindi è rapido; l'iframe runtime (lato client) cattura ciò che parte solo
+	 * via JS. I due risultati vengono uniti nel browser.
+	 *
+	 * @param WP_REST_Request $request Richiesta.
+	 * @return WP_REST_Response
+	 */
+	public function scan_server( $request ) {
+		$params = $request->get_json_params();
+		$urls   = isset( $params['urls'] ) && is_array( $params['urls'] ) ? $params['urls'] : array();
+
+		$site      = wp_parse_url( home_url() );
+		$site_host = isset( $site['host'] ) ? strtolower( $site['host'] ) : '';
+
+		$findings = array();
+		$count    = 0;
+		foreach ( $urls as $raw ) {
+			if ( $count >= 10 ) {
+				break;
+			}
+			$url = esc_url_raw( (string) $raw );
+			if ( '' === $url ) {
+				continue;
+			}
+			$u    = wp_parse_url( $url );
+			$host = isset( $u['host'] ) ? strtolower( $u['host'] ) : '';
+			// Sicurezza: solo URL dello stesso sito (no SSRF verso domini terzi).
+			if ( '' === $host || ! $this->is_first_party( $host, $site_host ) ) {
+				continue;
+			}
+			$count++;
+
+			$resp = wp_remote_get(
+				$url,
+				array(
+					'timeout'     => 10,
+					'redirection' => 3,
+					'user-agent'  => 'ConsentKit-Scanner/' . CONSENTKIT_VERSION,
+				)
+			);
+			if ( is_wp_error( $resp ) ) {
+				continue;
+			}
+			$body = wp_remote_retrieve_body( $resp );
+			if ( '' === $body ) {
+				continue;
+			}
+
+			$findings[] = array(
+				'url'     => $url,
+				'hosts'   => $this->extract_hosts( $body ),
+				'cookies' => array(),
+			);
+		}
+
+		$suggestions = $this->classify_findings( $findings );
+
+		return new WP_REST_Response( array( 'suggestions' => $suggestions ), 200 );
+	}
+
+	/**
+	 * Estrae gli host dalle risorse caricate nell'HTML (src/href di
+	 * script/link/img/iframe) più alcuni domini noti spesso presenti negli
+	 * snippet inline (GTM/GA/Pixel/Insight). Il classificatore scarta poi gli
+	 * host sconosciuti e quelli di prima parte.
+	 *
+	 * @param string $body HTML della pagina.
+	 * @return array Lista host (lowercase).
+	 */
+	private function extract_hosts( $body ) {
+		$hosts = array();
+
+		if ( preg_match_all( '/<(?:script|link|img|iframe)\b[^>]*?\b(?:src|href)\s*=\s*["\']([^"\']+)["\']/i', $body, $m ) ) {
+			foreach ( $m[1] as $res_url ) {
+				$p = wp_parse_url( html_entity_decode( $res_url ) );
+				if ( isset( $p['host'] ) ) {
+					$hosts[ strtolower( $p['host'] ) ] = true;
+				}
+			}
+		}
+
+		// Domini comuni iniettati via snippet inline (non come attributo src).
+		$inline = array(
+			'www.googletagmanager.com',
+			'www.google-analytics.com',
+			'connect.facebook.net',
+			'snap.licdn.com',
+			'px.ads.linkedin.com',
+			'www.clarity.ms',
+			'static.hotjar.com',
+			'maps.googleapis.com',
+			'analytics.tiktok.com',
+		);
+		foreach ( $inline as $domain ) {
+			if ( false !== stripos( $body, $domain ) ) {
+				$hosts[ $domain ] = true;
+			}
+		}
+
+		return array_keys( $hosts );
 	}
 
 	/**

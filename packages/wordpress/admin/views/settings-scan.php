@@ -13,31 +13,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// URL pre-suggeriti: homepage + (se esiste) la pagina contatti.
-$consentkit_urls = array( home_url( '/' ) );
-$consentkit_contact = get_page_by_path( 'contatti' );
-if ( ! $consentkit_contact ) {
-	$consentkit_contact = get_page_by_path( 'contact' );
-}
-if ( $consentkit_contact ) {
-	$consentkit_urls[] = get_permalink( $consentkit_contact );
-}
-$consentkit_urls_text = implode( "\n", array_map( 'esc_url', $consentkit_urls ) );
+// Pre-compilata solo la homepage: l'utente aggiunge le pagine che vuole (max 10).
+$consentkit_urls_text = esc_url( home_url( '/' ) );
 
 $consentkit_last = get_option( ConsentKit_Scanner::RESULTS_OPTION, array() );
 $consentkit_last_at = isset( $consentkit_last['scanned_at'] ) ? $consentkit_last['scanned_at'] : '';
 ?>
 <div class="consentkit-scan">
 	<p class="description">
-		<?php esc_html_e( 'Lo scanner carica le pagine indicate in un iframe nascosto (solo per te, come amministratore) con il consenso forzato ad "accettato", così tutti i servizi si rivelano. Rileva cookie e domini di terze parti e propone le righe da aggiungere al registro. Lo scan rileva soltanto: la revisione e il salvataggio restano a te.', 'consentkit' ); ?>
+		<?php esc_html_e( 'Lo scanner analizza le pagine indicate lato server (veloce) e, in più, carica la homepage in un iframe nascosto (solo per te, come amministratore) per rilevare anche i servizi iniettati via JavaScript. Rileva cookie e domini di terze parti e propone le righe da aggiungere al registro: la revisione e il salvataggio restano a te.', 'consentkit' ); ?>
 	</p>
 
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row"><label for="ck-scan-urls"><?php esc_html_e( 'URL da scansionare', 'consentkit' ); ?></label></th>
 			<td>
-				<textarea id="ck-scan-urls" rows="4" class="large-text code"><?php echo esc_textarea( $consentkit_urls_text ); ?></textarea>
-				<p class="description"><?php esc_html_e( 'Un URL per riga. La homepage copre header e footer (font, GA, GTM, pixel); aggiungi pagine con embed specifici (es. Google Maps nei Contatti, un articolo con YouTube).', 'consentkit' ); ?></p>
+				<textarea id="ck-scan-urls" rows="5" class="large-text code"><?php echo esc_textarea( $consentkit_urls_text ); ?></textarea>
+				<p class="description">
+					<?php esc_html_e( 'Un URL per riga, massimo 10. La homepage intercetta già ciò che viene caricato a livello di sito (header e footer: font, Google Analytics, GTM, pixel) e copre la gran parte dei casi. Aggiungi altre pagine solo se hanno embed specifici (es. Google Maps nei Contatti, un articolo con YouTube): gli stessi servizi si ripetono su tutte le pagine, quindi non serve scansionare tutto il sito.', 'consentkit' ); ?>
+				</p>
 			</td>
 		</tr>
 	</table>
@@ -47,11 +41,18 @@ $consentkit_last_at = isset( $consentkit_last['scanned_at'] ) ? $consentkit_last
 		<span id="ck-scan-status" class="ck-scan-status" aria-live="polite"></span>
 	</p>
 
-	<?php if ( $consentkit_last_at ) : ?>
+	<?php
+	if ( $consentkit_last_at ) :
+		// Salvato in UTC: lo mostriamo nel fuso orario configurato del sito.
+		$consentkit_last_local = get_date_from_gmt(
+			$consentkit_last_at,
+			get_option( 'date_format' ) . ' ' . get_option( 'time_format' )
+		);
+		?>
 		<p class="description">
 			<?php
-			/* translators: %s: data dell'ultima scansione (UTC). */
-			printf( esc_html__( 'Ultima scansione: %s (UTC).', 'consentkit' ), esc_html( $consentkit_last_at ) );
+			/* translators: %s: data e ora dell'ultima scansione (fuso del sito). */
+			printf( esc_html__( 'Ultima scansione: %s.', 'consentkit' ), esc_html( $consentkit_last_local ) );
 			?>
 		</p>
 	<?php endif; ?>

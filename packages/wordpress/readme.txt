@@ -4,7 +4,7 @@ Tags: cookie, consent, gdpr, cookie banner, consent mode
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,9 @@ No. ConsentKit does not communicate with any third-party server. It loads the Go
 
 == Upgrade Notice ==
 
+= 1.1.1 =
+Scan tab: load the URLs to scan from the site sitemap, with clearer guidance.
+
 = 1.1.0 =
 Adds a runtime cookie scanner to detect cookies and third-party services loaded on your pages.
 
@@ -68,6 +71,10 @@ Adds a runtime cookie scanner to detect cookies and third-party services loaded 
 First public release.
 
 == Changelog ==
+
+= 1.1.1 =
+* Scan tab: "Load from sitemap" button populates the URL list from the site sitemap (wp-sitemap.xml / sitemap_index.xml), with REST fallback. Only same-origin URLs are added.
+* Clearer help text: the scanner checks only the listed URLs (not the whole site); the homepage already covers site-wide scripts.
 
 = 1.1.0 =
 * New: runtime cookie scanner (Scan tab). Loads target pages in a hidden, admin-only iframe with consent forced to "accepted", reads cookies, storage and third-party resource domains, and suggests registry entries to review and import.

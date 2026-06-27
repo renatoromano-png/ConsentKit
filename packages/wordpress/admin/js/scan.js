@@ -1,8 +1,9 @@
 /**
- * ConsentKit — Admin scan orchestrator (roadmap §14, v1.1).
- * Carica gli URL in iframe nascosti (in sequenza), raccoglie i findings dal
- * collector via postMessage, li manda al server per la classificazione e
- * permette di importare i suggerimenti nel cookie registry.
+ * ConsentKit — Admin scan orchestrator (roadmap §14).
+ * Scan ibrido: (1) analisi veloce lato server di tutti gli URL (endpoint
+ * /scan/server, no rendering); (2) pass a runtime via iframe nascosto SOLO
+ * sulla homepage per i servizi iniettati via JavaScript. I risultati vengono
+ * uniti e l'utente li importa nel cookie registry.
  */
 ( function () {
 	'use strict';
@@ -71,6 +72,18 @@
 			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': cfg.restNonce },
 			body: JSON.stringify( body )
 		} ).then( function ( r ) { return r.json(); } );
+	}
+
+	// Unisce due liste di suggerimenti deduplicando per nome.
+	function mergeSuggestions( a, b ) {
+		var seen = {}, out = [];
+		( a || [] ).concat( b || [] ).forEach( function ( r ) {
+			var k = ( r && r.name ? r.name : '' ).toLowerCase();
+			if ( !k || seen[ k ] ) { return; }
+			seen[ k ] = true;
+			out.push( r );
+		} );
+		return out;
 	}
 
 	function renderRows( suggestions ) {
@@ -148,33 +161,38 @@
 
 		if ( !urls.length ) { setStatus( status, cfg.i18n.noUrls ); return; }
 
+		// Tetto a 10 URL.
+		var cap = cfg.maxUrls || 10;
+		var tooMany = urls.length > cap;
+		if ( tooMany ) { urls = urls.slice( 0, cap ); }
+
 		btn.disabled = true;
-		var findings = [];
-		var i = 0;
 
-		function next() {
-			if ( i >= urls.length ) {
-				setStatus( status, cfg.i18n.classifying );
-				rest( cfg.collectUrl, { findings: findings } )
-					.then( function ( res ) {
-						renderRows( res && res.suggestions ? res.suggestions : [] );
-						var msg = cfg.i18n.done;
-						if ( skipped > 0 ) { msg += ' ' + cfg.i18n.externalSkipped.replace( '%d', skipped ); }
-						setStatus( status, msg );
-					} )
-					.catch( function () { setStatus( status, cfg.i18n.error ); } )
-					.then( function () { btn.disabled = false; } );
-				return;
-			}
-			setStatus( status, cfg.i18n.scanning.replace( '%1', i + 1 ).replace( '%2', urls.length ) );
-			scanUrl( urls[ i ] ).then( function ( finding ) {
-				if ( finding ) { findings.push( finding ); }
-				i++;
-				next();
-			} );
-		}
-
-		next();
+		// 1) Scan veloce lato server di tutti gli URL (no rendering).
+		setStatus( status, cfg.i18n.scanningServer );
+		rest( cfg.serverUrl, { urls: urls } )
+			.then( function ( srv ) {
+				var serverSug = srv && srv.suggestions ? srv.suggestions : [];
+				// 2) Pass a runtime SOLO sulla homepage (primo URL) per i servizi via JS.
+				setStatus( status, cfg.i18n.scanningHome );
+				return scanUrl( urls[ 0 ] ).then( function ( finding ) {
+					var findings = finding ? [ finding ] : [];
+					setStatus( status, cfg.i18n.classifying );
+					return rest( cfg.collectUrl, { findings: findings } ).then( function ( rt ) {
+						var rtSug = rt && rt.suggestions ? rt.suggestions : [];
+						return mergeSuggestions( serverSug, rtSug );
+					} );
+				} );
+			} )
+			.then( function ( merged ) {
+				renderRows( merged );
+				var msg = cfg.i18n.done;
+				if ( tooMany ) { msg += ' ' + cfg.i18n.tooMany; }
+				if ( skipped > 0 ) { msg += ' ' + cfg.i18n.externalSkipped.replace( '%d', skipped ); }
+				setStatus( status, msg );
+			} )
+			.catch( function () { setStatus( status, cfg.i18n.error ); } )
+			.then( function () { btn.disabled = false; } );
 	}
 
 	function importSelected() {

@@ -62,8 +62,10 @@ class ConsentKit_Admin {
 					'restNonce'  => wp_create_nonce( 'wp_rest' ),
 					'collectUrl' => esc_url_raw( rest_url( 'consentkit/v1/scan/collect' ) ),
 					'importUrl'  => esc_url_raw( rest_url( 'consentkit/v1/scan/import' ) ),
+					'serverUrl'  => esc_url_raw( rest_url( 'consentkit/v1/scan/server' ) ),
 					'origin'     => $origin,
 					'timeoutMs'  => 12000,
+					'maxUrls'    => 10,
 					'categories' => array(
 						'necessary'   => __( 'Necessari', 'consentkit' ),
 						'analytics'   => __( 'Analytics', 'consentkit' ),
@@ -71,8 +73,8 @@ class ConsentKit_Admin {
 						'preferences' => __( 'Preferenze', 'consentkit' ),
 					),
 					'i18n'       => array(
-						/* translators: %1: numero pagina corrente; %2: numero totale di pagine. */
-						'scanning'     => __( 'Scansione pagina %1 di %2…', 'consentkit' ),
+						'scanningServer' => __( 'Analisi rapida delle pagine…', 'consentkit' ),
+						'scanningHome'   => __( 'Analisi a runtime della homepage…', 'consentkit' ),
 						'classifying'  => __( 'Classificazione dei risultati…', 'consentkit' ),
 						'done'         => __( 'Scansione completata.', 'consentkit' ),
 						'error'        => __( 'Si è verificato un errore.', 'consentkit' ),
@@ -84,6 +86,7 @@ class ConsentKit_Admin {
 						'imported'     => __( '%d voci aggiunte al registro. Ricarica il tab Cookie per vederle.', 'consentkit' ),
 						'sourceCookie' => __( 'Cookie', 'consentkit' ),
 						'sourceDomain' => __( 'Dominio', 'consentkit' ),
+						'tooMany'      => __( 'Massimo 10 URL: ho scansionato i primi 10.', 'consentkit' ),
 						/* translators: %d: numero di URL esterni ignorati. */
 						'externalSkipped' => __( '%d URL esterni ignorati (si scansiona solo questo sito).', 'consentkit' ),
 					),
