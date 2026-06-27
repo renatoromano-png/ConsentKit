@@ -23,6 +23,12 @@ final class ConsentKit {
 	/** @var ConsentKit_Api */
 	public $api;
 
+	/** @var ConsentKit_Scanner */
+	public $scanner;
+
+	/** @var ConsentKit_Shortcodes */
+	public $shortcodes;
+
 	public static function instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -33,6 +39,11 @@ final class ConsentKit {
 	private function __construct() {
 		$this->frontend = new ConsentKit_Frontend();
 		$this->api      = new ConsentKit_Api();
+		// Scanner: serve sia sul frontend (collector in scan-mode) sia per le
+		// rotte REST e il tab admin (roadmap §14).
+		$this->scanner  = new ConsentKit_Scanner();
+		// Shortcode per la pagina cookie policy (elenco cookie + stato consenso).
+		$this->shortcodes = new ConsentKit_Shortcodes();
 
 		if ( is_admin() ) {
 			$this->admin = new ConsentKit_Admin();

@@ -3,6 +3,10 @@ complianz-gdpr/
 complianz-gdpr.*.zip
 *.pdf
 
+# --- Documenti di lavoro Word (demo/bozze, NON pubblicare) ---
+*.docx
+~$*.docx
+
 # --- Documento di progetto interno (siti pilota, analisi, rollout) ---
 consentkit-project.md
 

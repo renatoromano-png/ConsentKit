@@ -301,11 +301,27 @@
     document.body.appendChild(btn);
   }
 
+  // Evento pubblico: notifica lo stato del consenso (utile alla pagina cookie
+  // policy e a integrazioni custom). detail = { categories, action }.
+  function emitConsent(state, action) {
+    try {
+      var ev;
+      if (typeof window.CustomEvent === 'function') {
+        ev = new CustomEvent('ck:consent', { detail: { categories: state, action: action } });
+      } else { // fallback IE
+        ev = document.createEvent('CustomEvent');
+        ev.initCustomEvent('ck:consent', false, false, { categories: state, action: action });
+      }
+      document.dispatchEvent(ev);
+    } catch (e) {}
+  }
+
   // --- Azioni di consenso ---------------------------------------------------
   function commit(state, action) {
     currentState = state;
     save(state, action);
     applyState(state);
+    emitConsent(state, action);
     removeBanner();
     closePreferences();
   }
@@ -327,6 +343,9 @@
       renderBanner();
     }
     renderReviewButton();
+    // Stato iniziale per la pagina cookie policy (anche quando il banner è visibile:
+    // riflette i default "negato" finché l'utente non sceglie).
+    emitConsent(currentState, stored && stored.action ? stored.action : 'none');
   }
 
   // API pubblica (utile per integrazioni custom e per il pulsante footer del tema)

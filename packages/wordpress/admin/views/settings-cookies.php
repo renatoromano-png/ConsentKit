@@ -30,9 +30,9 @@ function consentkit_cookie_row( $i, $row, $opt, $cats ) {
 	$url      = isset( $row['url_policy'] ) ? $row['url_policy'] : '';
 	?>
 	<tr>
-		<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[cookies][<?php echo esc_attr( $i ); ?>][name]" value="<?php echo esc_attr( $name ); ?>" placeholder="_ga" /></td>
-		<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[cookies][<?php echo esc_attr( $i ); ?>][service]" value="<?php echo esc_attr( $service ); ?>" placeholder="Google Analytics" /></td>
-		<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[cookies][<?php echo esc_attr( $i ); ?>][duration]" value="<?php echo esc_attr( $duration ); ?>" placeholder="2 anni" /></td>
+		<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[cookies][<?php echo esc_attr( $i ); ?>][name]" value="<?php echo esc_attr( $name ); ?>" placeholder="<?php esc_attr_e( 'es. _ga', 'consentkit' ); ?>" /></td>
+		<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[cookies][<?php echo esc_attr( $i ); ?>][service]" value="<?php echo esc_attr( $service ); ?>" placeholder="<?php esc_attr_e( 'es. Google Analytics', 'consentkit' ); ?>" /></td>
+		<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[cookies][<?php echo esc_attr( $i ); ?>][duration]" value="<?php echo esc_attr( $duration ); ?>" placeholder="<?php esc_attr_e( 'es. 2 anni', 'consentkit' ); ?>" /></td>
 		<td>
 			<select name="<?php echo esc_attr( $opt ); ?>[cookies][<?php echo esc_attr( $i ); ?>][category]">
 				<?php foreach ( $cats as $slug => $label ) : ?>
@@ -47,7 +47,14 @@ function consentkit_cookie_row( $i, $row, $opt, $cats ) {
 }
 ?>
 <p class="description">
-	<?php esc_html_e( 'Per le terze parti è sufficiente indicare servizio, categoria e link alla loro policy: non serve elencare ogni singolo cookie (Garante).', 'consentkit' ); ?>
+	<?php esc_html_e( 'Elenca qui i cookie/servizi che il sito usa davvero: popola il registro dal tab Scansione oppure aggiungili a mano. Per le terze parti basta servizio, categoria e link alla loro policy: non serve ogni singolo cookie (Garante).', 'consentkit' ); ?>
+</p>
+
+<p class="description">
+	<?php esc_html_e( 'Per pubblicare questo elenco nella tua pagina cookie policy usa gli shortcode:', 'consentkit' ); ?>
+	<code>[consentkit_cookie_table]</code> <?php esc_html_e( '(tabella cookie per categoria),', 'consentkit' ); ?>
+	<code>[consentkit_consent_settings]</code> <?php esc_html_e( '(stato del consenso + pulsante per modificarlo),', 'consentkit' ); ?>
+	<code>[consentkit_cookie_policy]</code> <?php esc_html_e( '(entrambi insieme).', 'consentkit' ); ?>
 </p>
 
 <table class="widefat striped consentkit-cookies">
@@ -74,7 +81,11 @@ function consentkit_cookie_row( $i, $row, $opt, $cats ) {
 	</tbody>
 </table>
 
-<p><button type="button" class="button" id="ck-add-cookie"><?php esc_html_e( '+ Aggiungi cookie', 'consentkit' ); ?></button></p>
+<p>
+	<button type="button" class="button" id="ck-add-cookie"><?php esc_html_e( '+ Aggiungi cookie', 'consentkit' ); ?></button>
+	<button type="button" class="button" id="ck-clear-cookies"><?php esc_html_e( 'Svuota registro', 'consentkit' ); ?></button>
+	<span class="description"><?php esc_html_e( 'Dopo aver svuotato, ricordati di salvare.', 'consentkit' ); ?></span>
+</p>
 
 <script>
 ( function () {
@@ -94,6 +105,21 @@ function consentkit_cookie_row( $i, $row, $opt, $cats ) {
 		if ( e.target.classList.contains( 'ck-remove-row' ) ) {
 			e.preventDefault();
 			if ( tbody.rows.length > 1 ) { e.target.closest( 'tr' ).remove(); }
+		}
+	} );
+
+	// Svuota registro: rimuove tutte le righe e ne lascia una vuota (template).
+	// Al salvataggio il registro risulta vuoto.
+	document.getElementById( 'ck-clear-cookies' ).addEventListener( 'click', function () {
+		if ( ! window.confirm( '<?php echo esc_js( __( 'Svuotare tutto il registro cookie? Le righe verranno rimosse; salva per confermare.', 'consentkit' ) ); ?>' ) ) {
+			return;
+		}
+		while ( tbody.rows.length > 1 ) { tbody.deleteRow( 0 ); }
+		var last = tbody.rows[ 0 ];
+		if ( last ) {
+			last.querySelectorAll( 'input' ).forEach( function ( f ) { f.value = ''; } );
+			var sel = last.querySelector( 'select' );
+			if ( sel ) { sel.value = 'necessary'; }
 		}
 	} );
 } )();

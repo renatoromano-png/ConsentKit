@@ -44,6 +44,52 @@ class ConsentKit_Admin {
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );
 		wp_add_inline_script( 'wp-color-picker', 'jQuery(function($){$(".ck-color-field").wpColorPicker();});' );
+
+		// Solo nel tab Scansione: orchestratore dello scanner runtime (§14).
+		$tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 'scan' === $tab ) {
+			wp_enqueue_script( 'consentkit-scan', CONSENTKIT_URL . 'admin/js/scan.js', array(), CONSENTKIT_VERSION, true );
+			$origin = wp_parse_url( home_url(), PHP_URL_SCHEME ) . '://' . wp_parse_url( home_url(), PHP_URL_HOST );
+			$port   = wp_parse_url( home_url(), PHP_URL_PORT );
+			if ( $port ) {
+				$origin .= ':' . $port;
+			}
+			wp_localize_script(
+				'consentkit-scan',
+				'ckScan',
+				array(
+					'scanNonce'  => ConsentKit_Scanner::scan_nonce(),
+					'restNonce'  => wp_create_nonce( 'wp_rest' ),
+					'collectUrl' => esc_url_raw( rest_url( 'consentkit/v1/scan/collect' ) ),
+					'importUrl'  => esc_url_raw( rest_url( 'consentkit/v1/scan/import' ) ),
+					'origin'     => $origin,
+					'timeoutMs'  => 12000,
+					'categories' => array(
+						'necessary'   => __( 'Necessari', 'consentkit' ),
+						'analytics'   => __( 'Analytics', 'consentkit' ),
+						'marketing'   => __( 'Marketing', 'consentkit' ),
+						'preferences' => __( 'Preferenze', 'consentkit' ),
+					),
+					'i18n'       => array(
+						/* translators: %1: numero pagina corrente; %2: numero totale di pagine. */
+						'scanning'     => __( 'Scansione pagina %1 di %2…', 'consentkit' ),
+						'classifying'  => __( 'Classificazione dei risultati…', 'consentkit' ),
+						'done'         => __( 'Scansione completata.', 'consentkit' ),
+						'error'        => __( 'Si è verificato un errore.', 'consentkit' ),
+						'noUrls'       => __( 'Inserisci almeno un URL.', 'consentkit' ),
+						'nothing'      => __( 'Nessun cookie o servizio di terze parti rilevato.', 'consentkit' ),
+						'noneSelected' => __( 'Nessuna riga selezionata.', 'consentkit' ),
+						'importing'    => __( 'Importazione…', 'consentkit' ),
+						/* translators: %d: numero di voci aggiunte al registro. */
+						'imported'     => __( '%d voci aggiunte al registro. Ricarica il tab Cookie per vederle.', 'consentkit' ),
+						'sourceCookie' => __( 'Cookie', 'consentkit' ),
+						'sourceDomain' => __( 'Dominio', 'consentkit' ),
+						/* translators: %d: numero di URL esterni ignorati. */
+						'externalSkipped' => __( '%d URL esterni ignorati (si scansiona solo questo sito).', 'consentkit' ),
+					),
+				)
+			);
+		}
 	}
 
 	public function register_settings() {
@@ -140,6 +186,7 @@ class ConsentKit_Admin {
 		$tabs     = array(
 			'general'      => __( 'Generale', 'consentkit' ),
 			'cookies'      => __( 'Cookie', 'consentkit' ),
+			'scan'         => __( 'Scansione', 'consentkit' ),
 			'integrations' => __( 'Integrazioni', 'consentkit' ),
 		);
 		$active = isset( $_GET['tab'] ) && isset( $tabs[ $_GET['tab'] ] ) ? sanitize_key( $_GET['tab'] ) : 'general'; // phpcs:ignore WordPress.Security.NonceVerification
@@ -156,17 +203,28 @@ class ConsentKit_Admin {
 				<?php endforeach; ?>
 			</h2>
 
-			<form method="post" action="options.php">
-				<?php settings_fields( 'consentkit_group' ); ?>
-				<input type="hidden" name="<?php echo esc_attr( CONSENTKIT_OPTION ); ?>[__tab]" value="<?php echo esc_attr( $active ); ?>" />
-				<?php
-				$view = CONSENTKIT_DIR . 'admin/views/settings-' . $active . '.php';
+			<?php
+			$view = CONSENTKIT_DIR . 'admin/views/settings-' . $active . '.php';
+			if ( 'scan' === $active ) {
+				// Il tab Scansione è un pannello interattivo (REST), non un form di opzioni.
 				if ( file_exists( $view ) ) {
 					include $view;
 				}
-				submit_button();
+			} else {
 				?>
-			</form>
+				<form method="post" action="options.php">
+					<?php settings_fields( 'consentkit_group' ); ?>
+					<input type="hidden" name="<?php echo esc_attr( CONSENTKIT_OPTION ); ?>[__tab]" value="<?php echo esc_attr( $active ); ?>" />
+					<?php
+					if ( file_exists( $view ) ) {
+						include $view;
+					}
+					submit_button();
+					?>
+				</form>
+				<?php
+			}
+			?>
 		</div>
 		<?php
 	}

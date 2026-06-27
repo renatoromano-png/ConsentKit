@@ -4,7 +4,7 @@ Tags: cookie, consent, gdpr, cookie banner, consent mode
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,15 +23,16 @@ Features:
 * LinkedIn Insight Tag loaded only with marketing consent.
 * Compliant banner re-prompt (minimum 6 months) and re-consent when the cookie policy changes.
 * Optional pseudonymized consent log for GDPR audits.
+* Runtime cookie scanner: loads your pages in a hidden iframe (admin only) and detects the cookies and third-party domains actually loaded, then suggests registry entries to review and save.
 
 The core is a dependency-free JavaScript engine, reusable on non-WordPress sites too.
 
-In v1.0 cookies are managed through a pre-filled registry of the most common services, editable by hand from the admin.
+Cookies are managed through a pre-filled registry of the most common services, editable by hand from the admin and extendable with the built-in scanner.
 
 Roadmap (in progress):
 
-* Automatic scanning of the cookies actually loaded on the site pages, to detect what is present without manual entry.
 * Automatic recognition and classification of the detected cookies through a public database (service, purpose, duration, category).
+* Automatic blocking of iframes and embeds (Google Maps, YouTube) and Google Fonts with a "click to load" placeholder.
 
 == Installation ==
 
@@ -60,10 +61,17 @@ No. ConsentKit does not communicate with any third-party server. It loads the Go
 
 == Upgrade Notice ==
 
+= 1.1.0 =
+Adds a runtime cookie scanner to detect cookies and third-party services loaded on your pages.
+
 = 1.0.0 =
 First public release.
 
 == Changelog ==
+
+= 1.1.0 =
+* New: runtime cookie scanner (Scan tab). Loads target pages in a hidden, admin-only iframe with consent forced to "accepted", reads cookies, storage and third-party resource domains, and suggests registry entries to review and import.
+* Internal classifier mapping common domains and cookie names to service and category. No external calls and no third-party data bundled.
 
 = 1.0.0 =
 * First release: banner, granular preferences, Consent Mode v2, GTM, LinkedIn, prior blocking, optional log.

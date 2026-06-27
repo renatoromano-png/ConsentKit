@@ -10,6 +10,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 delete_option( 'consentkit_settings' );
+delete_option( 'consentkit_scan_results' );
 
 global $wpdb;
 // Il nome tabella deriva solo da $wpdb->prefix + suffisso fisso (nessun input utente);

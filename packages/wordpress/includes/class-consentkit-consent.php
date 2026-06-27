@@ -63,27 +63,17 @@ class ConsentKit_Consent {
 	}
 
 	/**
-	 * Registry statico dei cookie più comuni (pre-popolato all'attivazione).
-	 * Per le terze parti basta categoria + servizio + link policy (§13.14):
-	 * nessun obbligo di dettaglio cookie-per-cookie.
+	 * Registry iniziale: VUOTO.
+	 *
+	 * Fino alla v1.0 qui c'era un elenco statico dei cookie più comuni (GA, Ads,
+	 * LinkedIn, ecc.) come template di partenza. Dalla v1.1 c'è lo scanner
+	 * (tab Scansione): il registro va popolato con ciò che il sito carica
+	 * DAVVERO. Pre-caricare cookie generici elencherebbe servizi non presenti —
+	 * una cookie policy inesatta è scorretta quanto una incompleta (Garante).
 	 *
 	 * @return array
 	 */
 	public static function default_registry() {
-		return array(
-			// Necessari
-			array( 'name' => 'wordpress_logged_in_*', 'service' => 'WordPress', 'duration' => __( 'Sessione', 'consentkit' ), 'category' => 'necessary', 'url_policy' => '' ),
-			array( 'name' => 'wp-settings-*', 'service' => 'WordPress', 'duration' => __( '1 anno', 'consentkit' ), 'category' => 'necessary', 'url_policy' => '' ),
-			array( 'name' => 'PHPSESSID', 'service' => 'PHP', 'duration' => __( 'Sessione', 'consentkit' ), 'category' => 'necessary', 'url_policy' => '' ),
-			// Analytics
-			array( 'name' => '_ga', 'service' => 'Google Analytics 4', 'duration' => __( '2 anni', 'consentkit' ), 'category' => 'analytics', 'url_policy' => 'https://policies.google.com/privacy' ),
-			array( 'name' => '_ga_*', 'service' => 'Google Analytics 4', 'duration' => __( '2 anni', 'consentkit' ), 'category' => 'analytics', 'url_policy' => 'https://policies.google.com/privacy' ),
-			array( 'name' => '_gid', 'service' => 'Google Analytics', 'duration' => __( '24 ore', 'consentkit' ), 'category' => 'analytics', 'url_policy' => 'https://policies.google.com/privacy' ),
-			// Marketing
-			array( 'name' => '_gcl_au', 'service' => 'Google Ads', 'duration' => __( '3 mesi', 'consentkit' ), 'category' => 'marketing', 'url_policy' => 'https://policies.google.com/privacy' ),
-			array( 'name' => 'li_gc', 'service' => 'LinkedIn', 'duration' => __( '2 anni', 'consentkit' ), 'category' => 'marketing', 'url_policy' => 'https://www.linkedin.com/legal/privacy-policy' ),
-			array( 'name' => 'bcookie', 'service' => 'LinkedIn', 'duration' => __( '2 anni', 'consentkit' ), 'category' => 'marketing', 'url_policy' => 'https://www.linkedin.com/legal/privacy-policy' ),
-			array( 'name' => 'UserMatchHistory', 'service' => 'LinkedIn', 'duration' => __( '30 giorni', 'consentkit' ), 'category' => 'marketing', 'url_policy' => 'https://www.linkedin.com/legal/privacy-policy' ),
-		);
+		return array();
 	}
 }
