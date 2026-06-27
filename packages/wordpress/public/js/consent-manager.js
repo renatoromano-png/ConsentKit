@@ -84,7 +84,10 @@
   function notifyServer(rec) {
     if (!cfg.logEndpoint) return;
     try {
+      // Il nonce va nel body: sendBeacon non può impostare header custom, e il
+      // server lo verifica da lì (vedi class-consentkit-api.php).
       var body = JSON.stringify({
+        nonce: cfg.logNonce || '',
         policyVersion: rec.policyVersion,
         timestamp: rec.timestamp,
         action: rec.action,
@@ -95,7 +98,7 @@
       } else {
         fetch(cfg.logEndpoint, {
           method: 'POST', keepalive: true,
-          headers: { 'Content-Type': 'application/json', 'X-CK-Nonce': cfg.logNonce || '' },
+          headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': cfg.logNonce || '' },
           body: body
         });
       }

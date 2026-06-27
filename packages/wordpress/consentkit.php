@@ -1,12 +1,13 @@
 <?php
 /**
  * Plugin Name:       ConsentKit
- * Plugin URI:        https://github.com/foodandtech/consentkit
- * Description:       Gestione consenso cookie GDPR/ePrivacy conforme alle Linee guida del Garante (Consent Mode v2, GTM, LinkedIn). Nessun limite su pagine, CPT o pageview.
+ * Plugin URI:        https://github.com/renatoromano-png/ConsentKit
+ * Description:       Consenso cookie GDPR/ePrivacy conforme alle Linee guida del Garante: Google Consent Mode v2, GTM e LinkedIn. Nessun limite su pagine o CPT.
  * Version:           1.0.0
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Author:            Food & Tech
+ * Author URI:        https://github.com/renatoromano-png
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       consentkit

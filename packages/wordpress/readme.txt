@@ -1,14 +1,14 @@
 === ConsentKit ===
 Contributors: foodandtech
-Tags: cookie, consent, gdpr, consent mode, garante, cookie banner
+Tags: cookie, consent, gdpr, cookie banner, consent mode
 Requires at least: 5.9
-Tested up to: 6.5
+Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Gestione consenso cookie GDPR/ePrivacy conforme alle Linee guida del Garante. Google Consent Mode v2, GTM, LinkedIn. Nessun limite su pagine, CPT o pageview.
+Consenso cookie GDPR/ePrivacy conforme alle Linee guida del Garante: Google Consent Mode v2, GTM e LinkedIn. Nessun limite su pagine o CPT.
 
 == Description ==
 
@@ -39,6 +39,22 @@ Sì, senza configurazione aggiuntiva e senza limiti.
 
 = È conforme al Garante Privacy italiano? =
 Il plugin implementa i requisiti tecnici delle Linee guida del 10 giugno 2021. La conformità complessiva dipende anche dalla corretta informativa e classificazione dei cookie del singolo sito.
+
+= Invia dati a servizi esterni? =
+No. ConsentKit non comunica con alcun server di terze parti. Carica gli script di Google (Consent Mode/GTM) e LinkedIn solo dopo il consenso e solo se li configuri. Il log dei consensi, se attivato, resta nel database del tuo sito ed è pseudonimizzato.
+
+== Screenshots ==
+
+1. Banner di consenso conforme al Garante (barra inferiore).
+2. Pannello preferenze granulari per categoria.
+3. Impostazioni → Generale: testi, colore, riproposizione.
+4. Impostazioni → Cookie: registry dei cookie.
+5. Impostazioni → Integrazioni: Consent Mode v2, GTM, LinkedIn.
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Prima release pubblica.
 
 == Changelog ==
 

@@ -51,7 +51,9 @@ class ConsentKit_Api {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'log_consent' ),
-				'permission_callback' => '__return_true', // endpoint pubblico, protetto da nonce + validazione
+				// Endpoint pubblico (visitatori non autenticati): la protezione vera
+					// è nel callback (nonce nel body + allowlist azioni + flag log_enabled).
+					'permission_callback' => '__return_true',
 			)
 		);
 	}
@@ -68,7 +70,14 @@ class ConsentKit_Api {
 			return new WP_REST_Response( array( 'logged' => false ), 200 );
 		}
 
-		$params     = $request->get_json_params();
+		$params = $request->get_json_params();
+
+		// Nonce nel body (sendBeacon non può inviare header custom): verifica anti-abuso.
+		$nonce = isset( $params['nonce'] ) ? sanitize_text_field( $params['nonce'] ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return new WP_REST_Response( array( 'logged' => false, 'error' => 'invalid_nonce' ), 403 );
+		}
+
 		$action     = isset( $params['action'] ) ? sanitize_text_field( $params['action'] ) : '';
 		$policy     = isset( $params['policyVersion'] ) ? sanitize_text_field( $params['policyVersion'] ) : '';
 		$categories = isset( $params['categories'] ) && is_array( $params['categories'] ) ? $params['categories'] : array();
