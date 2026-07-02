@@ -57,15 +57,37 @@ $consentkit_opt = CONSENTKIT_OPTION;
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label for="ck-color"><?php esc_html_e( 'Colore primario', 'consentkit' ); ?></label></th>
+		<th scope="row"><label for="ck-color"><?php esc_html_e( 'Colore primario (pulsanti)', 'consentkit' ); ?></label></th>
 		<td><input type="text" id="ck-color" class="ck-color-field" name="<?php echo esc_attr( $consentkit_opt ); ?>[primary_color]" value="<?php echo esc_attr( $settings['primary_color'] ); ?>" /></td>
+	</tr>
+	<tr>
+		<th scope="row"><label for="ck-primary-text-color"><?php esc_html_e( 'Colore testo pulsanti', 'consentkit' ); ?></label></th>
+		<td>
+			<input type="text" id="ck-primary-text-color" class="ck-color-field" name="<?php echo esc_attr( $consentkit_opt ); ?>[primary_text_color]" value="<?php echo esc_attr( $settings['primary_text_color'] ); ?>" />
+			<p class="description"><?php esc_html_e( 'Vuoto = bianco.', 'consentkit' ); ?></p>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><label for="ck-bg-color"><?php esc_html_e( 'Colore sfondo banner', 'consentkit' ); ?></label></th>
+		<td>
+			<input type="text" id="ck-bg-color" class="ck-color-field" name="<?php echo esc_attr( $consentkit_opt ); ?>[bg_color]" value="<?php echo esc_attr( $settings['bg_color'] ); ?>" />
+			<p class="description"><?php esc_html_e( 'Vuoto = automatico (chiaro/scuro di sistema). Per un box scuro imposta sfondo scuro e testo chiaro.', 'consentkit' ); ?></p>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><label for="ck-text-color"><?php esc_html_e( 'Colore testo banner', 'consentkit' ); ?></label></th>
+		<td>
+			<input type="text" id="ck-text-color" class="ck-color-field" name="<?php echo esc_attr( $consentkit_opt ); ?>[text_color]" value="<?php echo esc_attr( $settings['text_color'] ); ?>" />
+			<p class="description"><?php esc_html_e( 'Vuoto = automatico.', 'consentkit' ); ?></p>
+		</td>
 	</tr>
 	<tr>
 		<th scope="row"><label for="ck-position"><?php esc_html_e( 'Posizione banner', 'consentkit' ); ?></label></th>
 		<td>
 			<select id="ck-position" name="<?php echo esc_attr( $consentkit_opt ); ?>[position]">
 				<option value="bottom-bar" <?php selected( $settings['position'], 'bottom-bar' ); ?>><?php esc_html_e( 'Barra in basso', 'consentkit' ); ?></option>
-				<option value="modal" <?php selected( $settings['position'], 'modal' ); ?>><?php esc_html_e( 'Riquadro (modal)', 'consentkit' ); ?></option>
+				<option value="modal" <?php selected( $settings['position'], 'modal' ); ?>><?php esc_html_e( 'Riquadro centrato (modal)', 'consentkit' ); ?></option>
+				<option value="box-right" <?php selected( $settings['position'], 'box-right' ); ?>><?php esc_html_e( 'Riquadro in basso a destra', 'consentkit' ); ?></option>
 			</select>
 		</td>
 	</tr>

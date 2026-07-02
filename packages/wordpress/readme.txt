@@ -4,7 +4,7 @@ Tags: cookie, consent, gdpr, cookie banner, consent mode
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,9 @@ No. ConsentKit does not communicate with any third-party server. It loads the Go
 
 == Upgrade Notice ==
 
+= 1.2.0 =
+New banner position "Bottom-right box": a compact card on desktop, full-width bar on mobile.
+
 = 1.1.1 =
 Scan tab: load the URLs to scan from the site sitemap, with clearer guidance.
 
@@ -71,6 +74,9 @@ Adds a runtime cookie scanner to detect cookies and third-party services loaded 
 First public release.
 
 == Changelog ==
+
+= 1.2.0 =
+* New: banner position "Bottom-right box". On desktop the banner shows as a compact card anchored to the bottom-right corner instead of a full-width bar; on mobile it falls back to a full-width bottom bar for easy tapping. Selectable under Settings &rarr; General &rarr; Banner position.
 
 = 1.1.1 =
 * Scan tab: "Load from sitemap" button populates the URL list from the site sitemap (wp-sitemap.xml / sitemap_index.xml), with REST fallback. Only same-origin URLs are added.

@@ -38,7 +38,10 @@ class ConsentKit_Consent {
 			'review_label'         => __( 'Rivedi le tue scelte sui cookie', 'consentkit' ),
 			'prefs_title'          => __( 'Preferenze cookie', 'consentkit' ),
 			'primary_color'        => '#2563eb',
-			'position'             => 'bottom-bar', // bottom-bar | modal
+			'primary_text_color'   => '',           // '' = default (#ffffff): testo sui pulsanti
+			'bg_color'             => '',           // '' = automatico (chiaro/scuro di sistema)
+			'text_color'           => '',           // '' = automatico (chiaro/scuro di sistema)
+			'position'             => 'bottom-bar', // bottom-bar | modal | box-right
 			'show_banner'          => 1,            // off per siti con soli cookie tecnici (§13.11)
 			'consent_duration'     => 365,          // giorni
 			'reprompt_after_days'  => 180,          // Garante: min 6 mesi

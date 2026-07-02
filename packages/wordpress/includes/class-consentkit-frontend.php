@@ -58,10 +58,21 @@ class ConsentKit_Frontend {
 			CONSENTKIT_VERSION
 		);
 
-		// Colore primario personalizzato via variabile CSS inline.
-		$color = sanitize_hex_color( $s['primary_color'] );
-		if ( $color ) {
-			wp_add_inline_style( 'consentkit-banner', ':root{--ck-primary:' . $color . ';}' );
+		// Colori personalizzati via variabili CSS inline (vuoto = default/automatico).
+		$ck_vars = array(
+			'--ck-primary'          => sanitize_hex_color( $s['primary_color'] ),
+			'--ck-primary-contrast' => sanitize_hex_color( $s['primary_text_color'] ),
+			'--ck-bg'               => sanitize_hex_color( $s['bg_color'] ),
+			'--ck-text'             => sanitize_hex_color( $s['text_color'] ),
+		);
+		$ck_css = '';
+		foreach ( $ck_vars as $ck_var => $ck_value ) {
+			if ( $ck_value ) {
+				$ck_css .= $ck_var . ':' . $ck_value . ';';
+			}
+		}
+		if ( '' !== $ck_css ) {
+			wp_add_inline_style( 'consentkit-banner', ':root{' . $ck_css . '}' );
 		}
 
 		wp_enqueue_script(

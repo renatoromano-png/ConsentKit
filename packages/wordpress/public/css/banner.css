@@ -37,6 +37,17 @@
   width: min(560px, calc(100% - 32px));
   border-radius: var(--ck-radius);
 }
+/* Riquadro compatto ancorato in basso a destra (desktop). */
+.ck-box-right {
+  right: 20px; bottom: 20px; left: auto;
+  width: min(400px, calc(100% - 32px));
+  border-radius: var(--ck-radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .18);
+}
+/* Pulsanti impilati a piena larghezza; "Gestisci preferenze" (link) va in fondo. */
+.ck-box-right .ck-actions { flex-direction: column; align-items: stretch; }
+.ck-box-right .ck-actions .ck-btn { width: 100%; text-align: center; }
+.ck-box-right .ck-actions .ck-btn-link { order: 1; }
 .ck-banner .ck-title { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
 .ck-banner .ck-text { margin: 0 0 10px; color: var(--ck-text); }
 
@@ -102,6 +113,8 @@
 @media (max-width: 600px) {
   .ck-actions { justify-content: stretch; }
   .ck-actions .ck-btn-primary { flex: 1 1 auto; }
+  /* Su mobile il riquadro a destra diventa barra a piena larghezza in basso. */
+  .ck-box-right { left: 16px; right: 16px; bottom: 16px; width: auto; }
 }
 
 @media (prefers-color-scheme: dark) {

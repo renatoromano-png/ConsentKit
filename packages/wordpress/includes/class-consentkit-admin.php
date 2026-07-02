@@ -123,8 +123,14 @@ class ConsentKit_Admin {
 		if ( isset( $input['primary_color'] ) ) {
 			$out['primary_color'] = sanitize_hex_color( $input['primary_color'] ) ?: $out['primary_color'];
 		}
+		// Colori opzionali: vuoto = automatico. Un valore non valido azzera (torna automatico).
+		foreach ( array( 'primary_text_color', 'bg_color', 'text_color' ) as $ck_color_key ) {
+			if ( isset( $input[ $ck_color_key ] ) ) {
+				$out[ $ck_color_key ] = (string) sanitize_hex_color( $input[ $ck_color_key ] );
+			}
+		}
 		if ( isset( $input['position'] ) ) {
-			$out['position'] = in_array( $input['position'], array( 'bottom-bar', 'modal' ), true ) ? $input['position'] : 'bottom-bar';
+			$out['position'] = in_array( $input['position'], array( 'bottom-bar', 'modal', 'box-right' ), true ) ? $input['position'] : 'bottom-bar';
 		}
 		$out['show_banner'] = empty( $input['show_banner'] ) ? 0 : 1;
 
